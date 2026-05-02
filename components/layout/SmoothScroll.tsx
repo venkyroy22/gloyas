@@ -22,6 +22,23 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
 
     lenisRef.current = lenis;
 
+    // Watch for body .overflow-hidden to stop Lenis
+    const observer = new MutationObserver(() => {
+      const isLocked = document.body.classList.contains('overflow-hidden') || 
+                       document.body.style.overflow === 'hidden';
+      
+      if (isLocked) {
+        lenis.stop();
+      } else {
+        lenis.start();
+      }
+    });
+
+    observer.observe(document.body, { 
+      attributes: true, 
+      attributeFilter: ['class', 'style'] 
+    });
+
     function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
@@ -30,6 +47,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     requestAnimationFrame(raf);
 
     return () => {
+      observer.disconnect();
       lenis.destroy();
       lenisRef.current = null;
     };

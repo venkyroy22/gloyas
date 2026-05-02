@@ -52,12 +52,12 @@ export default function Navbar() {
   // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.classList.add('overflow-hidden');
     } else {
-      document.body.style.overflow = '';
+      document.body.classList.remove('overflow-hidden');
     }
     return () => { 
-      document.body.style.overflow = ''; 
+      document.body.classList.remove('overflow-hidden');
     };
   }, [mobileOpen]);
 
@@ -139,7 +139,6 @@ export default function Navbar() {
                 alt="GLOYAS Logo"
                 width={120}
                 height={40}
-                style={{ height: 'auto' }}
                 className={`h-7 sm:h-10 w-auto object-contain hover:opacity-80 transition-all duration-300 ${
                   isTransparent ? 'brightness-0 invert' : ''
                 }`}
@@ -218,6 +217,7 @@ export default function Navbar() {
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
               className="absolute right-0 top-0 bottom-0 w-full max-w-[320px] sm:max-w-[380px] bg-white flex flex-col"
               onClick={(e) => e.stopPropagation()}
+              data-lenis-prevent
             >
               {/* Header */}
               <div className="flex items-center justify-between p-5 border-b border-[#F0F0F0]">
@@ -227,7 +227,6 @@ export default function Navbar() {
                     alt="GLOYAS" 
                     width={100} 
                     height={32} 
-                    style={{ height: 'auto' }}
                     className="h-8 w-auto object-contain" 
                   />
                 </Link>
