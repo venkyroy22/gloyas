@@ -78,10 +78,10 @@ export default function AdminReviews() {
             <button
               key={filter}
               onClick={() => setStatusFilter(filter as 'all' | 'pending' | 'approved' | 'rejected')}
-              className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-colors ${
+              className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest transition-all duration-200 border ${
                 statusFilter === filter 
-                  ? 'bg-[#111111] text-white' 
-                  : 'bg-[#F9F9F9] text-[#666666] hover:bg-[#EEEEEE]'
+                  ? 'bg-[#0080FF] border-[#0080FF] text-white shadow-lg shadow-blue-500/20' 
+                  : 'bg-white border-[#EEEEEE] text-[#666666] hover:border-[#0080FF] hover:text-[#0080FF]'
               }`}
             >
               {filter}

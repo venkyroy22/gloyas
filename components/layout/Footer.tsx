@@ -54,11 +54,11 @@ export default function Footer() {
           </div>
 
           {/* Shop */}
-          <div className="flex flex-col gap-3 sm:gap-4">
+          <div className="flex flex-col gap-2 sm:gap-4">
             <h4 className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-[#111111]">
               Shop
             </h4>
-            <div className="flex flex-col gap-2 sm:gap-2.5">
+            <div className="flex flex-col gap-1.5 sm:gap-2.5">
               {[
                 { label: 'All Caps', href: '/products' },
                 { label: 'Baseball Caps', href: '/products?category=baseball-caps' },
@@ -79,11 +79,11 @@ export default function Footer() {
           </div>
 
           {/* Help */}
-          <div className="flex flex-col gap-3 sm:gap-4">
+          <div className="flex flex-col gap-2 sm:gap-4">
             <h4 className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-[#111111]">
               Help
             </h4>
-            <div className="flex flex-col gap-2 sm:gap-2.5">
+            <div className="flex flex-col gap-1.5 sm:gap-2.5">
               {[
                 { label: 'Track Order', href: '/track' },
                 { label: 'Customer Service', href: '#' },
@@ -103,12 +103,11 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* About */}
-          <div className="flex flex-col gap-3 sm:gap-4 col-span-2 lg:col-span-1 mt-4 sm:mt-0">
+          <div className="flex flex-col gap-2 sm:gap-4 col-span-2 lg:col-span-1">
             <h4 className="text-[10px] sm:text-xs font-bold tracking-widest uppercase text-[#111111]">
               About
             </h4>
-            <div className="flex flex-col gap-2 sm:gap-2.5">
+            <div className="flex flex-col gap-1.5 sm:gap-2.5">
               {['Our Story'].map((link) => (
                 <Link
                   key={link}
@@ -129,12 +128,6 @@ export default function Footer() {
           <p className="text-[10px] sm:text-xs font-light text-[#666666]">
             © 2026 GLOYAS. All rights reserved.
           </p>
-          <div className="flex items-center gap-3 sm:gap-4 text-[#999999]">
-            <span className="text-[10px] sm:text-xs font-light">Visa</span>
-            <span className="text-[10px] sm:text-xs font-light">Mastercard</span>
-            <span className="text-[10px] sm:text-xs font-light">UPI</span>
-            <span className="text-[10px] sm:text-xs font-light">PayPal</span>
-          </div>
         </div>
       </div>
     </footer>
