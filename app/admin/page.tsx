@@ -8,7 +8,7 @@ import { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Package, Users, DollarSign, TrendingUp, X, Check, Upload, Trash2, Mail, Calendar, Bell } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import { uploadToStreamlet } from '@/lib/streamlet';
+import { uploadToStreamlet, deleteFromStreamlet } from '@/lib/streamlet';
 import AdminReviews from '@/components/admin/AdminReviews';
 import AdminCoupons from '@/components/admin/AdminCoupons';
 import AdminOrders from '@/components/admin/AdminOrders';
@@ -36,12 +36,12 @@ interface AdminSubscriber {
 }
 
 export default function AdminDashboard() {
-  const { profile, isAuthenticated } = useAuthStore();
+  const { profile, isAuthenticated, isLoading } = useAuthStore();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isBulkPriceModalOpen, setIsBulkPriceModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isActionLoading, setIsActionLoading] = useState(false);
   const [currentTab, setCurrentTab] = useState<'products' | 'newsletter' | 'orders' | 'reviews' | 'coupons'>('products');
   const [bulkPriceData, setBulkPriceData] = useState({ category: 'all', percentage: '', type: 'increase' as 'increase' | 'decrease' });
   const [showNotifications, setShowNotifications] = useState(false);
@@ -122,6 +122,11 @@ export default function AdminDashboard() {
   const handleDeleteProduct = async (id: string) => {
     if (!confirm('Are you sure you want to delete this product? This action cannot be undone.')) return;
     
+    // 1. Get product images first
+    const product = inventory.find(p => p.id === id);
+    const imagesToDelete = product?.images || [];
+
+    // 2. Delete product from Supabase
     const { error } = await supabase
       .from('products')
       .delete()
@@ -130,8 +135,15 @@ export default function AdminDashboard() {
     if (error) {
       alert(error.message);
     } else {
+      // 3. Clean up images from Streamlet (async, don't wait for it)
+      imagesToDelete.forEach(url => {
+        if (url.includes('streamlet.in')) {
+          deleteFromStreamlet(url);
+        }
+      });
+      
       fetchInventory();
-      alert('Product deleted successfully.');
+      alert('Product and associated images deleted successfully.');
     }
   };
 
@@ -154,10 +166,10 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    if (mounted && (!isAuthenticated || profile?.role !== 'admin')) {
+    if (mounted && !isLoading && (!isAuthenticated || profile?.role !== 'admin')) {
       router.push('/');
     }
-  }, [mounted, isAuthenticated, profile, router]);
+  }, [mounted, isLoading, isAuthenticated, profile, router]);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -193,7 +205,7 @@ export default function AdminDashboard() {
       return;
     }
 
-    setIsLoading(true);
+    setIsActionLoading(true);
 
     try {
       // 1. Upload new files if any
@@ -262,11 +274,19 @@ export default function AdminDashboard() {
       console.error('Submission error:', error);
       alert(`Error: ${message}`);
     } finally {
-      setIsLoading(false);
+      setIsActionLoading(false);
     }
   };
 
-  if (!mounted || !isAuthenticated || profile?.role !== 'admin') return null;
+  if (isLoading || !mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F9F9F9]">
+        <div className="w-10 h-10 border-4 border-[#0080FF] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated || profile?.role !== 'admin') return null;
 
   return (
     <div className="min-h-screen pt-32 pb-20 px-4 bg-[#F8F8F8]">
@@ -886,7 +906,7 @@ export default function AdminDashboard() {
                   <button 
                     onClick={async () => {
                       if (!bulkPriceData.percentage) return alert('Enter a percentage');
-                      setIsLoading(true);
+                      setIsActionLoading(true);
                       try {
                         const multiplier = bulkPriceData.type === 'increase' 
                           ? 1 + (parseFloat(bulkPriceData.percentage) / 100)
@@ -916,14 +936,11 @@ export default function AdminDashboard() {
 
                         setIsBulkPriceModalOpen(false);
                         fetchInventory();
-                      } catch (e: unknown) {
-                        const message = e instanceof Error ? e.message : 'An unknown error occurred';
-                        alert(message);
                       } finally {
-                        setIsLoading(false);
+                        setIsActionLoading(false);
                       }
                     }}
-                    disabled={isLoading}
+                    disabled={isActionLoading}
                     className="w-full py-4 bg-[#0080FF] text-white text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-[#0066CC] transition-all disabled:opacity-50"
                   >
                     Apply Bulk Update

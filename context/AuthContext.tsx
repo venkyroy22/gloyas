@@ -28,6 +28,7 @@ interface AuthState {
   user: User | null;
   profile: UserProfile | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   setUser: (supabaseUser: SupabaseUser | null) => void;
   setProfile: (profile: UserProfile | null) => void;
   fetchProfile: () => Promise<void>;
@@ -40,6 +41,7 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       profile: null,
       isAuthenticated: false,
+      isLoading: true,
       setUser: (supabaseUser) => {
         if (supabaseUser) {
           set({
@@ -49,10 +51,11 @@ export const useAuthStore = create<AuthState>()(
               email: supabaseUser.email || '',
             },
             isAuthenticated: true,
+            isLoading: false,
           });
           get().fetchProfile();
         } else {
-          set({ user: null, profile: null, isAuthenticated: false });
+          set({ user: null, profile: null, isAuthenticated: false, isLoading: false });
         }
       },
       setProfile: (profile) => set({ profile }),

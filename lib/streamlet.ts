@@ -52,3 +52,24 @@ export const uploadToStreamlet = async (file: File): Promise<string> => {
     throw error;
   }
 };
+
+/**
+ * Deletes an image from Streamlet.in
+ * @param cdnUrl The full CDN URL of the image to delete
+ */
+export const deleteFromStreamlet = async (cdnUrl: string): Promise<void> => {
+  try {
+    const response = await fetch('/api/delete-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cdnUrl }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Failed to delete image from Streamlet:', errorData.message);
+    }
+  } catch (error) {
+    console.error('Delete utility error:', error);
+  }
+};

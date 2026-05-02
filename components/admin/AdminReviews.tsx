@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { fetchAllReviews, updateReviewStatus, deleteReview, Review } from '@/lib/reviews';
 import { Star, CheckCircle, XCircle, Trash2, Image as ImageIcon, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { deleteFromStreamlet } from '@/lib/streamlet';
 
 export default function AdminReviews() {
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -42,8 +43,22 @@ export default function AdminReviews() {
 
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to completely delete this review?')) return;
+    
+    // 1. Get images first
+    const review = reviews.find(r => r.id === id);
+    const imagesToDelete = review?.images || [];
+
     try {
+      // 2. Delete from Supabase
       await deleteReview(id);
+      
+      // 3. Clean up from Streamlet (async)
+      imagesToDelete.forEach(url => {
+        if (url.includes('streamlet.in')) {
+          deleteFromStreamlet(url);
+        }
+      });
+
       setReviews(prev => prev.filter(r => r.id !== id));
     } catch {
       alert('Failed to delete review.');

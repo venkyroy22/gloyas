@@ -16,22 +16,23 @@ import Link from 'next/link';
 type ProfileView = 'details' | 'address' | 'orders' | 'wishlist';
 
 export default function ProfilePage() {
-  const { user, profile, isAuthenticated, logout, fetchProfile } = useAuthStore();
+  const { user, profile, isAuthenticated, isLoading, logout, fetchProfile } = useAuthStore();
   const { items: wishlistItems, removeItem: removeFromWishlist } = useWishlistStore();
   const addItemToCart = useCartStore((s) => s.addItem);
   
   const router = useRouter();
   const [activeView, setActiveView] = useState<ProfileView>('details');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isOrdersLoading, setIsOrdersLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [formData, setFormData] = useState<Partial<UserProfile>>({});
   const tabsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isLoading && !isAuthenticated) {
       router.push('/signin');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, isLoading, router]);
 
   useEffect(() => {
     if (profile) {
@@ -43,7 +44,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (activeView === 'orders' && user) {
       const fetchOrders = async () => {
-        setIsLoading(true);
+        setIsOrdersLoading(true);
         const { data, error } = await supabase
           .from('orders')
           .select('*, order_items(*)')
@@ -51,7 +52,7 @@ export default function ProfilePage() {
           .order('created_at', { ascending: false });
         
         if (!error) setOrders(data || []);
-        setIsLoading(false);
+        setIsOrdersLoading(false);
       };
       fetchOrders();
     }
@@ -67,11 +68,19 @@ export default function ProfilePage() {
     }
   }, [activeView]);
 
+  if (isLoading) {
+    return (
+      <div className="min-h-[60vh] pt-32 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#0080FF] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   if (!isAuthenticated || !user) return null;
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsUpdating(true);
 
     const { error } = await supabase
       .from('profiles')
@@ -87,7 +96,7 @@ export default function ProfilePage() {
       await fetchProfile();
       setActiveView('details');
     }
-    setIsLoading(false);
+    setIsUpdating(false);
   };
 
   const tabs = [
@@ -297,10 +306,10 @@ export default function ProfilePage() {
                       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6">
                         <button
                           type="submit"
-                          disabled={isLoading}
+                          disabled={isUpdating}
                           className="w-full sm:w-auto px-10 py-3.5 sm:py-4 bg-[#0080FF] text-white text-[10px] font-bold uppercase tracking-[0.2em] flex items-center justify-center gap-2 hover:bg-[#006bdd] transition-all disabled:opacity-50"
                         >
-                          {isLoading ? 'Saving...' : 'Save Address'}
+                          {isUpdating ? 'Saving...' : 'Save Address'}
                         </button>
                         <button
                           type="button"
@@ -318,7 +327,7 @@ export default function ProfilePage() {
                     <section className="space-y-6">
                       <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-[#111111] mb-4 sm:mb-8">Your Orders</h2>
                       
-                      {isLoading ? (
+                      {isOrdersLoading ? (
                         <div className="py-20 flex justify-center">
                           <div className="w-8 h-8 border-2 border-[#0080FF]/30 border-t-[#0080FF] rounded-full animate-spin" />
                         </div>

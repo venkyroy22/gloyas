@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { Star, Send, User, Edit2, Trash2, X, Camera, CheckCircle, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Review, fetchProductReviews, submitReview, updateReview, deleteReview, checkVerifiedPurchase } from '@/lib/reviews';
-import { uploadToStreamlet } from '@/lib/streamlet';
+import { uploadToStreamlet, deleteFromStreamlet } from '@/lib/streamlet';
 import { useAuthStore } from '@/context/AuthContext';
 
 interface ReviewSectionProps {
@@ -79,8 +79,21 @@ export default function ReviewSection({ productId, onReviewUpdate }: ReviewSecti
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete your review?')) return;
     
+    // 1. Get images first
+    const review = reviews.find(r => r.id === id);
+    const imagesToDelete = review?.images || [];
+
     try {
+      // 2. Delete from Supabase
       await deleteReview(id);
+      
+      // 3. Clean up from Streamlet (async)
+      imagesToDelete.forEach(url => {
+        if (url.includes('streamlet.in')) {
+          deleteFromStreamlet(url);
+        }
+      });
+
       loadReviews();
       onReviewUpdate?.();
       alert('Review deleted.');
