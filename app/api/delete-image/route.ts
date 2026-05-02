@@ -15,13 +15,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Server configuration missing' }, { status: 500 });
     }
 
-    // Streamlet deletion usually requires the filename or the full URL
-    const response = await fetch('https://api.streamlet.in/api-key/delete-image', {
+    // Streamlet deletion requires the account number in the URL path
+    const response = await fetch(`https://api.streamlet.in/${accountNumber}/delete-image`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'x-streamlet-api-key': apiKey,
-        'x-streamlet-account-number': accountNumber,
       },
       body: JSON.stringify({ cdnUrl }),
     });
