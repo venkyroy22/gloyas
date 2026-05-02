@@ -93,7 +93,18 @@ export default function AdminDashboard() {
       .select('*')
       .order('created_at', { ascending: false });
     
-    if (data) setInventory(data);
+    if (data) {
+      const mappedData = (data as any[]).map(p => ({
+        ...p,
+        images: p.images || [],
+        colors: p.colors || [],
+        sizes: p.sizes || [],
+        subcategory: p.subcategory || '',
+        description: p.description || '',
+        product_story: p.product_story || ''
+      }));
+      setInventory(mappedData);
+    }
     setIsInventoryLoading(false);
   };
 
@@ -291,7 +302,7 @@ export default function AdminDashboard() {
                           inventory.filter(p => p.price > 2000).map(p => (
                             <div key={p.id} className="flex items-center gap-3 p-2 hover:bg-[#F9F9F9] transition-colors border-l-2 border-orange-400">
                               <div className="w-8 h-8 bg-[#F5F5F5] overflow-hidden relative">
-                                <Image src={p.images[0]} alt="" fill className="object-cover" />
+                                {p.images?.[0] && <Image src={p.images[0]} alt="" fill className="object-cover" />}
                               </div>
                               <div className="flex-1">
                                 <p className="text-[10px] font-bold text-[#111111] uppercase truncate">{p.name}</p>
@@ -418,7 +429,7 @@ export default function AdminDashboard() {
                             <td className="px-6 py-4">
                               <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 bg-[#F9F9F9] border border-[#EEEEEE] overflow-hidden relative">
-                                  <Image src={product.images[0]} alt="" fill className="object-cover" />
+                                  {product.images?.[0] && <Image src={product.images[0]} alt="" fill className="object-cover" />}
                                 </div>
                                 <div>
                                   <p className="font-bold text-[#111111] uppercase text-[11px] tracking-tight">{product.name}</p>
