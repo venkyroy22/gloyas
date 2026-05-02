@@ -6,6 +6,7 @@ import { Star, Send, User, Edit2, Trash2, X, Camera, CheckCircle, Clock } from '
 import { motion, AnimatePresence } from 'framer-motion';
 import { Review, fetchProductReviews, submitReview, updateReview, deleteReview, checkVerifiedPurchase } from '@/lib/reviews';
 import { uploadToStreamlet, deleteFromStreamlet } from '@/lib/streamlet';
+import { compressImage } from '@/lib/image-optimizer';
 import { useAuthStore } from '@/context/AuthContext';
 
 interface ReviewSectionProps {
@@ -139,7 +140,9 @@ export default function ReviewSection({ productId, onReviewUpdate }: ReviewSecti
 
     for (const file of selectedPhotos) {
       try {
-        const cdnUrl = await uploadToStreamlet(file);
+        // Optimize image to stay under Vercel's 4.5MB payload limit
+        const optimizedFile = await compressImage(file);
+        const cdnUrl = await uploadToStreamlet(optimizedFile);
         urls.push(cdnUrl);
       } catch (error) {
         console.error('Photo upload error:', error);

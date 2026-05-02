@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Package, Users, DollarSign, TrendingUp, X, Check, Upload, Trash2, Mail, Calendar, Bell } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { uploadToStreamlet, deleteFromStreamlet } from '@/lib/streamlet';
+import { compressImage } from '@/lib/image-optimizer';
 import AdminReviews from '@/components/admin/AdminReviews';
 import AdminCoupons from '@/components/admin/AdminCoupons';
 import AdminOrders from '@/components/admin/AdminOrders';
@@ -190,8 +191,15 @@ export default function AdminDashboard() {
     const urls: string[] = [];
     
     for (const file of selectedFiles) {
-      const cdnUrl = await uploadToStreamlet(file);
-      urls.push(cdnUrl);
+      try {
+        // Optimize image to stay under Vercel's 4.5MB payload limit
+        const optimizedFile = await compressImage(file);
+        const cdnUrl = await uploadToStreamlet(optimizedFile);
+        urls.push(cdnUrl);
+      } catch (error) {
+        console.error('Upload failed for file:', file.name, error);
+        // Continue with other files if one fails, or handle as needed
+      }
     }
     
     return urls;
