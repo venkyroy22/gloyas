@@ -34,6 +34,8 @@ export const uploadToStreamlet = async (file: File): Promise<string> => {
   formData.append('image', file);
 
   try {
+    console.log(`Starting Streamlet upload for: ${file.name}`);
+    
     const response = await fetch(STREAMLET_API_URL, {
       method: 'POST',
       headers: {
@@ -44,14 +46,26 @@ export const uploadToStreamlet = async (file: File): Promise<string> => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to upload image to Streamlet');
+      const errorText = await response.text();
+      let errorMessage = 'Failed to upload image to Streamlet';
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMessage = errorJson.message || errorMessage;
+      } catch (e) {
+        errorMessage = `Upload failed (${response.status}): ${errorText.substring(0, 100)}`;
+      }
+      throw new Error(errorMessage);
     }
 
     const data: StreamletUploadResponse = await response.json();
+    if (!data.cdnUrl) {
+      throw new Error('Streamlet upload succeeded but no CDN URL was returned');
+    }
+    
+    console.log(`Streamlet upload success: ${data.cdnUrl}`);
     return data.cdnUrl;
   } catch (error) {
-    console.error('Error uploading to Streamlet:', error);
+    console.error('Detailed Streamlet error:', error);
     throw error;
   }
 };

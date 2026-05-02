@@ -178,12 +178,8 @@ export default function AdminDashboard() {
     const urls: string[] = [];
     
     for (const file of selectedFiles) {
-      try {
-        const cdnUrl = await uploadToStreamlet(file);
-        urls.push(cdnUrl);
-      } catch (error) {
-        console.error('Streamlet upload error:', error);
-      }
+      const cdnUrl = await uploadToStreamlet(file);
+      urls.push(cdnUrl);
     }
     
     return urls;
@@ -191,10 +187,25 @@ export default function AdminDashboard() {
 
   const handleAddProduct = async (e: FormEvent) => {
     e.preventDefault();
+    
+    if (selectedFiles.length === 0 && !editingProductId && previews.length === 0) {
+      alert('Please upload at least one image for a new product.');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const imageUrls = await uploadImages();
+      // 1. Upload new files if any
+      const newImageUrls = await uploadImages();
+      
+      // 2. Prepare the images array (keep existing ones if editing)
+      let finalImages = previews.filter(url => url.startsWith('http')); // Keep already uploaded URLs
+      finalImages = [...finalImages, ...newImageUrls]; // Add newly uploaded URLs
+
+      if (finalImages.length === 0) {
+        throw new Error('No images uploaded. Please ensure you have selected files and your API keys are correct.');
+      }
 
       const productData = {
         name: newProduct.name,
@@ -202,7 +213,7 @@ export default function AdminDashboard() {
         subcategory: newProduct.subcategory,
         price: parseFloat(newProduct.price),
         description: newProduct.description,
-        images: imageUrls.length > 0 ? imageUrls : undefined, // Keep old images if editing without new ones (to be handled properly)
+        images: finalImages,
         colors: [{ name: newProduct.color_name, hex: newProduct.color_hex }],
         sizes: newProduct.sizes.split(',').map(s => s.trim()).filter(Boolean),
         is_new: true,
@@ -213,23 +224,20 @@ export default function AdminDashboard() {
       };
 
       if (editingProductId) {
-        // Edit mode (we won't overwrite images if no new ones are uploaded for now, simplified)
-        const updateData = { ...productData };
-        if (imageUrls.length === 0) delete updateData.images;
-        
         const { error } = await supabase
           .from('products')
-          .update(updateData)
+          .update(productData)
           .eq('id', editingProductId);
           
         if (error) throw error;
+        alert('Product updated successfully!');
       } else {
-        // Add mode
         const { error } = await supabase
           .from('products')
           .insert([productData]);
 
         if (error) throw error;
+        alert('Product published successfully!');
       }
 
       setIsAddModalOpen(false);
@@ -249,10 +257,10 @@ export default function AdminDashboard() {
       setSelectedFiles([]);
       setPreviews([]);
       fetchInventory();
-      alert('Product published successfully!');
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'An unknown error occurred';
-      alert(message);
+      console.error('Submission error:', error);
+      alert(`Error: ${message}`);
     } finally {
       setIsLoading(false);
     }
