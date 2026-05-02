@@ -22,50 +22,24 @@ export interface StreamletUploadResponse {
  * @returns The CDN URL of the uploaded image
  */
 export const uploadToStreamlet = async (file: File): Promise<string> => {
-  const apiKey = process.env.NEXT_PUBLIC_STREAMLET_API_KEY;
-  const accountNumber = process.env.NEXT_PUBLIC_STREAMLET_ACCOUNT_NUMBER;
-
-  if (!apiKey || !accountNumber) {
-    console.error('Streamlet credentials missing. Please check your environment variables.');
-    throw new Error('Streamlet integration not configured');
-  }
-
   const formData = new FormData();
   formData.append('image', file);
 
   try {
-    console.log(`Starting Streamlet upload for: ${file.name}`);
-    
-    const response = await fetch(STREAMLET_API_URL, {
+    const response = await fetch('/api/upload', {
       method: 'POST',
-      headers: {
-        'x-streamlet-api-key': apiKey,
-        'x-streamlet-account-number': accountNumber,
-      },
       body: formData,
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      let errorMessage = 'Failed to upload image to Streamlet';
-      try {
-        const errorJson = JSON.parse(errorText);
-        errorMessage = errorJson.message || errorMessage;
-      } catch (e) {
-        errorMessage = `Upload failed (${response.status}): ${errorText.substring(0, 100)}`;
-      }
-      throw new Error(errorMessage);
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to upload image');
     }
 
     const data: StreamletUploadResponse = await response.json();
-    if (!data.cdnUrl) {
-      throw new Error('Streamlet upload succeeded but no CDN URL was returned');
-    }
-    
-    console.log(`Streamlet upload success: ${data.cdnUrl}`);
     return data.cdnUrl;
   } catch (error) {
-    console.error('Detailed Streamlet error:', error);
+    console.error('Upload utility error:', error);
     throw error;
   }
 };
