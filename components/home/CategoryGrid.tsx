@@ -158,6 +158,7 @@ export default function CategoryGrid() {
                       src={cat.image}
                       alt={isActive ? `Shop ${cat.name} collection` : `${cat.name} coming soon`}
                       fill
+                      sizes="(max-width: 768px) 100px, 120px"
                       className="object-contain"
                     />
                   </div>

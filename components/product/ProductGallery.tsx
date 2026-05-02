@@ -96,6 +96,7 @@ export default function ProductGallery({ images, name }: ProductGalleryProps) {
               src={images[selectedIndex]}
               alt={`${name} - View ${selectedIndex + 1}`}
               fill
+              sizes="(max-width: 768px) 100vw, 800px"
               className="object-cover touch-pan-y"
               style={
                 isZooming
@@ -172,6 +173,7 @@ export default function ProductGallery({ images, name }: ProductGalleryProps) {
                 src={img}
                 alt={`${name} thumbnail ${i + 1}`}
                 fill
+                sizes="64px"
                 className="object-cover"
               />
             </div>

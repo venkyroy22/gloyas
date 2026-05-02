@@ -139,6 +139,7 @@ export default function Navbar() {
                 alt="GLOYAS Logo"
                 width={120}
                 height={40}
+                style={{ height: 'auto' }}
                 className={`h-7 sm:h-10 w-auto object-contain hover:opacity-80 transition-all duration-300 ${
                   isTransparent ? 'brightness-0 invert' : ''
                 }`}
@@ -221,7 +222,14 @@ export default function Navbar() {
               {/* Header */}
               <div className="flex items-center justify-between p-5 border-b border-[#F0F0F0]">
                 <Link href="/" onClick={() => setMobileOpen(false)}>
-                  <Image src="https://cdn.streamlet.in/69e90aee72e67a6c3dc22477/images/logo-1776881142841.webp" alt="GLOYAS" width={100} height={32} className="h-8 w-auto object-contain" />
+                  <Image 
+                    src="https://cdn.streamlet.in/69e90aee72e67a6c3dc22477/images/logo-1776881142841.webp" 
+                    alt="GLOYAS" 
+                    width={100} 
+                    height={32} 
+                    style={{ height: 'auto' }}
+                    className="h-8 w-auto object-contain" 
+                  />
                 </Link>
                 <button
                   aria-label="Close menu"

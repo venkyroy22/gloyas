@@ -32,6 +32,7 @@ export default function Footer() {
                 src="https://cdn.streamlet.in/69e90aee72e67a6c3dc22477/images/logo-1776881142841.webp"
                 alt="GLOYAS Logo"
                 fill
+                sizes="128px"
                 className="object-contain hover:opacity-80 transition-opacity duration-300"
               />
             </Link>

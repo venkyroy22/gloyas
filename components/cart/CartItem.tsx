@@ -25,6 +25,7 @@ export default function CartItemCard({ item }: CartItemProps) {
           src={item.image}
           alt={item.name}
           fill
+          sizes="96px"
           className="object-cover hover:scale-105 transition-transform duration-300"
         />
       </Link>
