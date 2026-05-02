@@ -63,8 +63,22 @@ export async function sendOrderConfirmationAction(order: Order) {
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="2" style="padding: 20px 10px 5px; text-align: right; font-weight: bold; color: #111111;">TOTAL (INCL. TAXES)</td>
-              <td style="padding: 20px 10px 5px; text-align: right; font-weight: bold; color: #111111; font-size: 18px;">₹${total_amount}</td>
+              <td colspan="2" style="padding: 20px 10px 5px; text-align: right; color: #666666;">SUBTOTAL</td>
+              <td style="padding: 20px 10px 5px; text-align: right; color: #111111;">₹${order.subtotal_amount}</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="padding: 5px 10px; text-align: right; color: #666666;">SHIPPING</td>
+              <td style="padding: 5px 10px; text-align: right; color: #111111;">${order.shipping_amount === 0 ? 'FREE' : `₹${order.shipping_amount}`}</td>
+            </tr>
+            ${order.discount_amount > 0 ? `
+            <tr>
+              <td colspan="2" style="padding: 5px 10px; text-align: right; color: #00C853;">DISCOUNT (${order.coupon_code})</td>
+              <td style="padding: 5px 10px; text-align: right; color: #00C853;">-₹${order.discount_amount}</td>
+            </tr>
+            ` : ''}
+            <tr>
+              <td colspan="2" style="padding: 10px; text-align: right; font-weight: bold; color: #111111; border-top: 1px solid #EEEEEE;">TOTAL</td>
+              <td style="padding: 10px; text-align: right; font-weight: bold; color: #111111; font-size: 18px; border-top: 1px solid #EEEEEE;">₹${total_amount}</td>
             </tr>
           </tfoot>
         </table>

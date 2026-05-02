@@ -26,7 +26,11 @@ export interface OrderItem {
 
 export interface OrderData {
   user_id?: string | null;
+  subtotal_amount: number;
+  shipping_amount: number;
+  discount_amount: number;
   total_amount: number;
+  coupon_code?: string | null;
   shipping_address: ShippingAddress;
   items: CartItem[];
 }
@@ -34,7 +38,11 @@ export interface OrderData {
 export interface Order {
   id: string;
   user_id: string | null;
+  subtotal_amount: number;
+  shipping_amount: number;
+  discount_amount: number;
   total_amount: number;
+  coupon_code: string | null;
   shipping_address: ShippingAddress;
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
   tracking_id: string | null;
@@ -50,7 +58,11 @@ export const createOrder = async (orderData: OrderData) => {
       .from('orders')
       .insert({
         user_id: orderData.user_id || null,
+        subtotal_amount: orderData.subtotal_amount,
+        shipping_amount: orderData.shipping_amount,
+        discount_amount: orderData.discount_amount,
         total_amount: orderData.total_amount,
+        coupon_code: orderData.coupon_code || null,
         shipping_address: orderData.shipping_address,
         status: 'pending',
       })

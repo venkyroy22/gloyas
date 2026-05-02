@@ -76,7 +76,11 @@ export default function CheckoutPage() {
     
     const orderData = {
       user_id: user?.id || null,
+      subtotal_amount: subtotal,
+      shipping_amount: shipping,
+      discount_amount: discount,
       total_amount: total,
+      coupon_code: appliedCoupon?.code || null,
       shipping_address: shippingInfo,
       items: items,
     };

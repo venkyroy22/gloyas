@@ -79,9 +79,9 @@ export async function generateInvoicePDF(order: Order) {
   const finalY = doc.lastAutoTable.finalY || 150;
 
   // Totals
-  const subtotal = order.order_items.reduce((sum, i) => sum + i.price * i.quantity, 0);
-  const shipping = subtotal > 999 ? 0 : 99;
-  // tax calculation removed as it was unused
+  const subtotal = order.subtotal_amount;
+  const shipping = order.shipping_amount;
+  const discount = order.discount_amount;
   
   doc.setFont('helvetica', 'normal');
   doc.text('Subtotal:', pageWidth - 60, finalY + 15);
@@ -90,10 +90,20 @@ export async function generateInvoicePDF(order: Order) {
   doc.text('Shipping:', pageWidth - 60, finalY + 22);
   doc.text(shipping === 0 ? 'FREE' : formatInvoicePrice(shipping), pageWidth - 14, finalY + 22, { align: 'right' });
   
+  let currentY = finalY + 22;
+
+  if (discount > 0) {
+    currentY += 7;
+    doc.setTextColor(0, 150, 0); // Success Green for discount
+    doc.text(`Discount (${order.coupon_code || 'Coupon'}):`, pageWidth - 60, currentY);
+    doc.text(`-${formatInvoicePrice(discount)}`, pageWidth - 14, currentY, { align: 'right' });
+    doc.setTextColor(0); // Reset to black
+  }
+
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(12);
-  doc.text('TOTAL:', pageWidth - 60, finalY + 32);
-  doc.text(formatInvoicePrice(order.total_amount), pageWidth - 14, finalY + 32, { align: 'right' });
+  doc.text('TOTAL:', pageWidth - 60, currentY + 10);
+  doc.text(formatInvoicePrice(order.total_amount), pageWidth - 14, currentY + 10, { align: 'right' });
 
   // Footer
   doc.setFontSize(9);
