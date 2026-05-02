@@ -30,13 +30,20 @@ interface ReviewRow {
  * Fetch approved reviews for a product (public-facing).
  * Only returns reviews with status = 'approved'.
  */
-export const fetchProductReviews = async (productId: string): Promise<Review[]> => {
-  const { data, error } = await supabase
+export const fetchProductReviews = async (productId: string, currentUserId?: string): Promise<Review[]> => {
+  let query = supabase
     .from('reviews')
     .select('*')
-    .eq('product_id', productId)
-    .eq('status', 'approved')
-    .order('created_at', { ascending: false });
+    .eq('product_id', productId);
+
+  if (currentUserId) {
+    // Show approved reviews OR the current user's own reviews (even if pending)
+    query = query.or(`status.eq.approved,user_id.eq.${currentUserId}`);
+  } else {
+    query = query.eq('status', 'approved');
+  }
+
+  const { data, error } = await query.order('created_at', { ascending: false });
 
   if (error) {
     if (error.code === '42P01') {

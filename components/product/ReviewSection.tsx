@@ -44,10 +44,10 @@ export default function ReviewSection({ productId, onReviewUpdate }: ReviewSecti
 
   const loadReviews = useCallback(async () => {
     setIsLoading(true);
-    const data = await fetchProductReviews(productId);
+    const data = await fetchProductReviews(productId, user?.id);
     setReviews(data);
     setIsLoading(false);
-  }, [productId]);
+  }, [productId, user?.id]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -298,18 +298,21 @@ export default function ReviewSection({ productId, onReviewUpdate }: ReviewSecti
       <AnimatePresence>
         {showSuccess && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="mb-8 p-4 bg-[#F0F7FF] border border-[#0080FF]/20 flex items-center gap-3"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="mb-10 p-6 bg-[#F0F7FF] border border-[#0080FF]/30 shadow-sm flex items-start gap-4"
           >
-            <Clock size={16} className="text-[#0080FF] flex-shrink-0" />
+            <div className="w-10 h-10 bg-[#0080FF] rounded-full flex items-center justify-center flex-shrink-0">
+              <Clock size={20} className="text-white" />
+            </div>
             <div>
-              <p className="text-sm font-bold text-[#111111]">
-                {editingReviewId ? 'Review updated!' : 'Review submitted successfully!'}
+              <p className="text-base font-bold text-[#111111] uppercase tracking-wider mb-1">
+                {editingReviewId ? 'Review Updated' : 'Review Submitted Successfully'}
               </p>
-              <p className="text-xs text-[#666666] font-light">
-                Your review is pending approval and will be visible once verified by our team.
+              <p className="text-sm text-[#666666] font-light leading-relaxed">
+                Thank you for your feedback! Your review is now in our <span className="font-semibold text-[#0080FF]">verification queue</span>. 
+                It will be visible to everyone once our team has verified it.
               </p>
             </div>
           </motion.div>
@@ -517,6 +520,11 @@ export default function ReviewSection({ productId, onReviewUpdate }: ReviewSecti
                         )}
                         {isOwner && (
                           <span className="text-[8px] font-bold uppercase tracking-widest bg-[#0080FF]/10 text-[#0080FF] px-1.5 py-0.5 rounded">You</span>
+                        )}
+                        {isOwner && review.status === 'pending' && (
+                          <span className="text-[8px] font-bold uppercase tracking-widest bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded flex items-center gap-1 border border-amber-100">
+                            <Clock size={8} /> Pending Approval
+                          </span>
                         )}
                       </div>
                       <p className="text-[10px] text-[#999999] font-medium tracking-wider">
