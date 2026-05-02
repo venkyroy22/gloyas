@@ -32,8 +32,17 @@ export const uploadToStreamlet = async (file: File): Promise<string> => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to upload image');
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to upload image');
+      } else {
+        const text = await response.text();
+        if (response.status === 413) {
+          throw new Error('The image file is too large. Please use a file smaller than 4MB.');
+        }
+        throw new Error(`Upload failed (${response.status}): ${text.substring(0, 50)}`);
+      }
     }
 
     const data: StreamletUploadResponse = await response.json();

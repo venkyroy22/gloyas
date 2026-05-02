@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Increase the limit for Vercel (Max is 4.5MB on hobby plan)
+export const config = {
+  api: {
+    bodyParser: false, // Disabling bodyParser to handle it manually
+  },
+};
+
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
