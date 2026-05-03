@@ -5,7 +5,6 @@
  * optimized image delivery via a global CDN.
  */
 
-const STREAMLET_API_URL = 'https://api.streamlet.in/api-key/upload-image';
 
 export interface StreamletUploadResponse {
   status: string;

@@ -126,6 +126,7 @@ export default function Navbar() {
               aria-label="Menu"
               className="p-2 hover:opacity-70 transition-opacity duration-300"
               onClick={() => setMobileOpen(true)}
+              suppressHydrationWarning
             >
               <Menu size={24} strokeWidth={1.5} />
             </button>
@@ -154,6 +155,7 @@ export default function Navbar() {
               aria-label="Search"
               onClick={() => setSearchOpen(true)}
               className="p-2 hover:opacity-70 transition-opacity duration-300"
+              suppressHydrationWarning
             >
               <Search size={22} strokeWidth={1.5} />
             </button>
@@ -170,6 +172,7 @@ export default function Navbar() {
               aria-label="Wishlist"
               onClick={onWishlistOpen}
               className="p-2 hover:opacity-70 transition-opacity duration-300 relative"
+              suppressHydrationWarning
             >
               <Heart size={22} strokeWidth={1.5} />
               {mounted && wishlistItems.length > 0 && (

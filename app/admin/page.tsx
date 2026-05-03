@@ -95,7 +95,7 @@ export default function AdminDashboard() {
       .order('created_at', { ascending: false });
     
     if (data) {
-      const mappedData = (data as any[]).map(p => ({
+      const mappedData = (data as AdminProduct[]).map(p => ({
         ...p,
         images: p.images || [],
         colors: p.colors || [],
