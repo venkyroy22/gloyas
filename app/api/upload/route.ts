@@ -1,49 +1,58 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Increase the limit for Vercel (Max is 4.5MB on hobby plan)
-export const config = {
-  api: {
-    bodyParser: false, // Disabling bodyParser to handle it manually
-  },
-};
-
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
-    const file = formData.get('image') as File;
+    const image = formData.get('image');
 
-    if (!file) {
-      return NextResponse.json({ message: 'No image provided' }, { status: 400 });
+    if (!image) {
+      return NextResponse.json(
+        { error: 'No image provided' },
+        { status: 400 }
+      );
     }
 
-    const apiKey = process.env.NEXT_PUBLIC_STREAMLET_API_KEY;
-    const accountNumber = process.env.NEXT_PUBLIC_STREAMLET_ACCOUNT_NUMBER;
+    const streamletApiKey = process.env.STREAMLET_API_KEY;
+    const streamletAccountNumber = process.env.STREAMLET_ACCOUNT_NUMBER;
 
-    if (!apiKey || !accountNumber) {
-      return NextResponse.json({ message: 'Server configuration missing' }, { status: 500 });
+    if (!streamletApiKey || !streamletAccountNumber) {
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
     }
 
+    // Forward the formData to Streamlet
     const streamletFormData = new FormData();
-    streamletFormData.append('image', file);
+    streamletFormData.append('image', image);
 
-    const response = await fetch('https://api.streamlet.in/api-key/upload-image', {
+    const response = await fetch('https://api.streamletedge.com/api-key/upload-image', {
       method: 'POST',
       headers: {
-        'x-streamlet-api-key': apiKey,
-        'x-streamlet-account-number': accountNumber,
+        'x-streamlet-api-key': streamletApiKey,
+        'x-streamlet-account-number': streamletAccountNumber,
       },
       body: streamletFormData,
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      return NextResponse.json({ message: `Streamlet Error: ${errorText}` }, { status: response.status });
+      console.error('Streamlet upload error:', errorText);
+      return NextResponse.json(
+        { error: 'Failed to upload image to Streamlet' },
+        { status: response.status }
+      );
     }
 
     const data = await response.json();
+    
+    // The API responds with { cdnUrl: "..." } on success
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Server-side upload error:', error);
-    return NextResponse.json({ message: 'Internal server error during upload' }, { status: 500 });
+    console.error('Error in upload route:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

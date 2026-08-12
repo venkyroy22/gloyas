@@ -22,7 +22,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
 
     lenisRef.current = lenis;
 
-    // Watch for body .overflow-hidden to stop Lenis
+    // Watch for body .overflow-hidden to stop Lenis scroll
     const observer = new MutationObserver(() => {
       const isLocked = document.body.classList.contains('overflow-hidden') || 
                        document.body.style.overflow === 'hidden';
@@ -57,7 +57,6 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (lenisRef.current) {
       lenisRef.current.scrollTo(0, { immediate: true });
-      // Small delay to ensure DOM is updated before resize
       setTimeout(() => {
         lenisRef.current?.resize();
       }, 100);

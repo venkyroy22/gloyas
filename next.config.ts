@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'cdn.streamlet.in',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.streamletedge.com',
+      },
     ],
   },
 };
