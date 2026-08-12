@@ -30,7 +30,7 @@ export default function Footer() {
           <div className="flex flex-col gap-4 col-span-2 sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center relative h-8 sm:h-10 w-28">
               <Image
-                src="https://cdn.streamlet.in/69e90aee72e67a6c3dc22477/images/logo-1776881142841.webp"
+                src="/images/Gloyas-logo.png"
                 alt="GLOYAS Logo"
                 fill
                 sizes="110px"

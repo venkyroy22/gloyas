@@ -170,7 +170,7 @@ export default function HomePage() {
                         fill 
                         sizes="(max-width: 768px) 128px, 224px" 
                         className="object-cover" 
-                        priority={idx < 4} 
+                        priority 
                       />
                     </div>
                   </div>
