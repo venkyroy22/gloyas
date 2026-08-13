@@ -158,7 +158,7 @@ export default function ContactPage() {
                         <option value="Branding">Brand Strategy & Identity</option>
                         <option value="Rebrand">Corporate Rebranding</option>
                         <option value="Marketing">Growth Marketing Campaigns</option>
-                        <option value="NotSure">I'm not sure</option>
+                        <option value="NotSure">I&apos;m not sure</option>
                       </select>
                     </div>
                   </div>

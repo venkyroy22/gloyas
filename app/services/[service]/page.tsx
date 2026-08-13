@@ -18,7 +18,7 @@ export default function ServiceDetailPage() {
           Service Not Found
         </h1>
         <p className="text-sm font-light text-gray-500 mt-3">
-          The service page you are looking for has been moved or doesn't exist.
+          The service page you are looking for has been moved or doesn&apos;t exist.
         </p>
         <Link 
           href="/services"

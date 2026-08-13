@@ -72,7 +72,7 @@ export default function ProcessPage() {
 
         {/* Process list layout */}
         <div className="flex flex-col gap-10 sm:gap-14 max-w-5xl">
-          {steps.map((item, i) => (
+          {steps.map((item) => (
             <motion.div
               key={item.step}
               initial={{ opacity: 0, y: 40 }}

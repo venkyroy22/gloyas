@@ -29,11 +29,6 @@ const navLinks = [
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (mobileOpen) {
@@ -45,7 +40,7 @@ export default function Navbar() {
   }, [mobileOpen]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMobileOpen(false);
   }, [pathname]);
 
@@ -57,7 +52,7 @@ export default function Navbar() {
           {/* Logo on the left */}
           <Link href="/" className="flex items-center relative h-8 sm:h-9 w-28">
             <Image
-              src="/images/Gloyas-logo.png"
+              src="https://cdn.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/Gloyas-logo-1776881142841.webp"
               alt="GLOYAS Logo"
               fill
               sizes="110px"
@@ -165,7 +160,7 @@ export default function Navbar() {
               <div className="flex items-center justify-between p-5 border-b border-[#E2E8F0]">
                 <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center relative h-6 w-24">
                   <Image 
-                    src="/images/Gloyas-logo.png" 
+                    src="https://cdn.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/Gloyas-logo-1776881142841.webp" 
                     alt="GLOYAS" 
                     fill
                     sizes="96px"

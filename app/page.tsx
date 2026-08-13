@@ -53,20 +53,6 @@ const HeroDecorationsSVG = () => (
     <path d="M 1050 645 L 1050 655 M 1045 650 L 1055 650" stroke="#000000" strokeWidth="1.5" opacity="0.2" strokeLinecap="round" />
   </svg>
 );
-const MegaphoneSVG = () => (
-  <svg viewBox="0 0 500 400" className="w-full h-full max-h-[350px] sm:max-h-[450px]" fill="none" xmlns="http://www.w3.org/2000/svg">
-    {/* Abstract shapes and lines simulating the megaphone illustration */}
-    <path d="M150 200 L350 100 L350 300 Z" fill="#278DFD" stroke="#000000" strokeWidth="4"/>
-    <circle cx="150" cy="200" r="40" fill="#FFFFFF" stroke="#000000" strokeWidth="4"/>
-    <path d="M100 200 L150 200" stroke="#000000" strokeWidth="4" />
-    <path d="M400 150 C420 150 450 170 450 200 C450 230 420 250 400 250" stroke="#000000" strokeWidth="4" strokeLinecap="round"/>
-    <path d="M380 100 C430 100 480 140 480 200 C480 260 430 300 380 300" stroke="#000000" strokeWidth="4" strokeDasharray="8 8" strokeLinecap="round"/>
-    {/* Stars and sparks */}
-    <path d="M50 80 L60 100 L80 110 L60 120 L50 140 L40 120 L20 110 L40 100 Z" fill="#278DFD" stroke="#000000" strokeWidth="3"/>
-    <path d="M420 50 L425 65 L440 70 L425 75 L420 90 L415 75 L400 70 L415 65 Z" fill="#000000" />
-    <circle cx="250" cy="50" r="10" stroke="#000000" strokeWidth="4" fill="transparent"/>
-  </svg>
-);
 
 const AbstractShapeSVG = () => (
   <svg viewBox="0 0 300 300" className="w-full h-full max-h-[250px]" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -112,10 +98,10 @@ const EmailIconSVG = () => (
 export default function HomePage() {
   const [, setCurrentSlide] = useState(0);
   const heroImages = [
-    "/images/glo-hero1.png",
-    "/images/glo-hero2.png",
-    "/images/glo-hero3.png",
-    "/images/glo-hero4.png",
+    "https://cdn.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero1-1776881142841.webp",
+    "https://cdn.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero2-1776881142841.webp",
+    "https://cdn.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero3-1776881142841.webp",
+    "https://cdn.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero4-1776881142841.webp",
   ];
 
   useEffect(() => {

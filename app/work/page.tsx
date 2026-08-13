@@ -92,7 +92,7 @@ export default function PortfolioPage() {
             Ready to design a similar success story?
           </h3>
           <p className="text-sm font-light text-gray-500 max-w-md mx-auto mb-10 leading-relaxed">
-            Let's design and code a performant digital asset, custom brand rules, or campaign ads tailored for your audience.
+            Let&apos;s design and code a performant digital asset, custom brand rules, or campaign ads tailored for your audience.
           </p>
           <Link
             href="/contact"
