@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'cdn.streamletedge.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn-img.streamletedge.com',
+      },
     ],
   },
 };

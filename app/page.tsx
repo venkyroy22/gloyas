@@ -98,10 +98,10 @@ const EmailIconSVG = () => (
 export default function HomePage() {
   const [, setCurrentSlide] = useState(0);
   const heroImages = [
-    "https://cdn.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero1-1776881142841.webp",
-    "https://cdn.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero2-1776881142841.webp",
-    "https://cdn.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero3-1776881142841.webp",
-    "https://cdn.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero4-1776881142841.webp",
+    "https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero1-1786600151050.webp",
+    "https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero2-1786600155337.webp",
+    "https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero3-1786600158055.webp",
+    "https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero4-1786600160768.webp",
   ];
 
   useEffect(() => {
