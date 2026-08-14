@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { MenuIcon, CloseIcon, ArrowRightIcon } from '@/components/ui/Icons';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Layout, Palette, Smartphone, Megaphone } from 'lucide-react';
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -13,15 +14,14 @@ const navLinks = [
     label: 'Services', 
     href: '/services',
     subLinks: [
-      { label: 'Web Designing', href: '/services/web-designing' },
-      { label: 'Branding', href: '/services/branding' },
-      { label: 'Social Media Management', href: '/services/social-media-management' },
-      { label: 'Marketing', href: '/services/marketing' },
+      { label: 'Web Designing', href: '/services/web-designing', icon: Layout },
+      { label: 'Branding', href: '/services/branding', icon: Palette },
+      { label: 'Social Media Management', href: '/services/social-media-management', icon: Smartphone },
+      { label: 'Marketing', href: '/services/marketing', icon: Megaphone },
     ]
   },
   { label: 'Our Work', href: '/work' },
   { label: 'Our Process', href: '/process' },
-  { label: 'Pricing', href: '/pricing' },
   { label: 'About Us', href: '/about' },
   { label: 'Careers', href: '/careers' },
 ];
@@ -84,9 +84,10 @@ export default function Navbar() {
                           <Link
                             key={subLink.label}
                             href={subLink.href}
-                            className="px-4 py-2.5 text-[14px] text-gray-600 hover:text-black hover:bg-gray-50 rounded-xl transition-colors duration-200 whitespace-nowrap"
+                            className="px-4 py-2.5 flex items-center gap-3 text-[14px] text-gray-600 hover:text-black hover:bg-gray-50 rounded-xl transition-colors duration-200 whitespace-nowrap"
                           >
-                            {subLink.label}
+                            {subLink.icon && <subLink.icon className="w-4 h-4 text-gray-400 group-hover:text-black transition-colors" />}
+                            <span>{subLink.label}</span>
                           </Link>
                         ))}
                       </div>
@@ -107,12 +108,6 @@ export default function Navbar() {
             </div>
             
             <div className="flex items-center gap-6 border-l border-gray-200 pl-6">
-              <Link
-                href="/login"
-                className="text-[15px] text-black font-medium hover:opacity-80 transition-opacity"
-              >
-                Sign in
-              </Link>
               {/* Primary Contact CTA button */}
               <Link
                 href="/contact"

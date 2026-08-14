@@ -84,7 +84,6 @@ export default function Footer() {
             <div className="flex flex-col gap-2 sm:gap-3">
               {[
                 { label: 'Our Process', href: '/process' },
-                { label: 'Pricing Packages', href: '/pricing' },
                 { label: 'Contact Us', href: '/contact' },
               ].map((link) => (
                 <Link
@@ -121,10 +120,14 @@ export default function Footer() {
         </div>
 
         {/* Bottom copyright divider */}
-        <div className="border-t border-[#E2E8F0] mt-10 pt-6 flex items-center justify-between">
-          <p className="text-[10px] sm:text-xs font-light text-gray-400">
+        <div className="border-t border-[#E2E8F0] mt-10 pt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-0 items-center">
+          <p className="text-[10px] sm:text-xs font-light text-gray-400 text-center sm:text-left">
             © 2026 GLOYAS. All rights reserved.
           </p>
+          <p className="text-xs sm:text-sm font-light text-gray-500 text-center">
+            Crafted with <span className="text-[#278DFD] text-sm sm:text-base mx-1">❤</span> to spread glory.
+          </p>
+          <div className="hidden sm:block"></div>
         </div>
       </div>
     </footer>
