@@ -14,8 +14,7 @@ export const HeroDecorationsSVG = () => (
     <StarSVG cx={150} cy={150} r={10} color="#278DFD" />
     <StarSVG cx={350} cy={80} r={6} color="#000000" />
     <StarSVG cx={600} cy={350} r={5} color="#278DFD" />
-    <StarSVG cx={450} cy={600} r={8} color="#000000" />
-    <StarSVG cx={250} cy={500} r={4} color="#278DFD" />
+    {/* Removed stars that were overlapping the text */}
     
     {/* Stars - Top Right / Center Right */}
     <StarSVG cx={700} cy={120} r={6} color="#000000" />
