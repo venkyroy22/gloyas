@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "We build brands, websites, and marketing campaigns that refuse to look average. Outcome-driven strategy and custom digital platforms.",
   keywords: ["branding agency", "website design", "rebranding", "marketing services", "brand strategy", "GLOYAS"],
   icons: {
-    icon: "/tab_icon.jpg",
+    icon: "/images/Gloyas-favicon.png",
   },
   appleWebApp: {
     capable: true,
