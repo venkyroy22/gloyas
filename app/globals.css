@@ -11,7 +11,7 @@
 @layer base {
   :root {
     --color-primary: #278DFD;
-    --color-accent: #D4FF5C;
+    --color-accent: #278DFD;
     --color-border-dark: #111111;
   }
 

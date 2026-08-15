@@ -27,7 +27,7 @@ export default function WorkCard({ caseStudy, index = 0 }: WorkCardProps) {
           <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-[#278DFD]">
             {caseStudy.categoryLabel}
           </span>
-          <span className="px-3 py-1 bg-[#D4FF5C] text-black border border-black rounded-full text-[8px] font-bold uppercase tracking-wider">
+          <span className="px-3 py-1 bg-[#278DFD] text-white border border-[#278DFD] rounded-full text-[8px] font-bold uppercase tracking-wider">
             Case Study
           </span>
         </div>

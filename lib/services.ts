@@ -19,6 +19,8 @@ export interface ServiceDetail {
   deliverables: string[];
   process: ServiceStep[];
   testimonial: ServiceTestimonial;
+  heroImage?: string;
+  ctaImage?: string;
 }
 
 export const servicesData: Record<string, ServiceDetail> = {
@@ -26,7 +28,9 @@ export const servicesData: Record<string, ServiceDetail> = {
     slug: 'web-designing',
     title: 'Web Designing',
     shortDescription: 'Custom-crafted digital experiences that look stunning and convert users into customers. We blend clean aesthetics with performant development.',
-    description: 'We believe your website is the digital storefront of your business. Our team designs and develops bespoke digital platforms that are custom-built, fully responsive, and optimized for speed and SEO. No bloated templates, just clean code and high-end design.',
+    description: "Think of your website as your digital storefront. It's often the first impression people get of your business. That's why our team builds every site from scratch: fully custom, fully responsive, and fast where it counts. No bloated templates or cookie-cutter themes, just clean code and design that actually looks like you.",
+    heroImage: '/Services-Service-Imgs/Service-Webdesigning.png',
+    ctaImage: '/Services-Service-Imgs/web-cta.png',
     whoItIsFor: 'Businesses looking for a unique, premium digital presence that stands out from competitor template sites and drives high-value conversions.',
     deliverables: [
       'Custom UI/UX Design (Figma wireframes & designs)',
@@ -52,6 +56,8 @@ export const servicesData: Record<string, ServiceDetail> = {
     title: 'Brand Strategy & Identity',
     shortDescription: 'We shape how your business is perceived. From logos to complete visual guidelines, we build identity systems that command premium positioning.',
     description: 'Branding is more than a logo; it is the emotional and intellectual relationship your company has with its clients. We craft comprehensive brand identities including positioning strategy, typography systems, color theory, and visual rules that resonate with your target market.',
+    heroImage: '/Services-Service-Imgs/Service-Branding.png',
+    ctaImage: '/Services-Service-Imgs/branding-cta.png',
     whoItIsFor: 'Startups launching new products or established companies seeking to establish premium market positioning and command higher rates.',
     deliverables: [
       'Brand Audit & Competitor Positioning Analysis',
@@ -77,6 +83,8 @@ export const servicesData: Record<string, ServiceDetail> = {
     title: 'Social Media Management',
     shortDescription: 'Modernize your company for today\'s market. We help mature companies shed outdated branding and rebuild their market relevance without losing legacy trust.',
     description: 'As businesses evolve, their branding can become misaligned with their actual size, customer base, and services. Our corporate rebranding process gently transition legacy brand equity into a modernized visual system that attracts high-caliber clients.',
+    heroImage: '/Services-Service-Imgs/Service-SocialMediaManagement.png',
+    ctaImage: '/Services-Service-Imgs/social-cta.png',
     whoItIsFor: 'Established businesses that feel their current brand looks outdated, matches smaller competitors, or fails to represent their premium worth.',
     deliverables: [
       'Legacy Equity Audit & Brand Strategy',
@@ -102,6 +110,8 @@ export const servicesData: Record<string, ServiceDetail> = {
     title: 'Marketing Services',
     shortDescription: 'Data-backed marketing campaigns that drive revenue. We align your brand\'s story with design-driven campaigns across digital channels.',
     description: 'High-quality design is only effective if it reaches the right audience. We design, launch, and optimize high-end marketing campaigns that align with your brand story, focusing on visual communication, high-converting copy, and structured ROI tracking.',
+    heroImage: '/Services-Service-Imgs/Service-Marketing.png',
+    ctaImage: '/Services-Service-Imgs/market-cta.png',
     whoItIsFor: 'Businesses seeking design-first digital ad campaigns, pitch decks, client proposals, or ongoing creative strategy to accelerate growth.',
     deliverables: [
       'Digital Ad Campaign Creative Design & Copy',

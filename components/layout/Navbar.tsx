@@ -12,7 +12,7 @@ const navLinks = [
   { label: 'Home', href: '/' },
   { 
     label: 'Services', 
-    href: '/services',
+    href: '#',
     subLinks: [
       { label: 'Web Designing', href: '/services/web-designing', icon: Layout },
       { label: 'Branding', href: '/services/branding', icon: Palette },
@@ -20,7 +20,7 @@ const navLinks = [
       { label: 'Marketing', href: '/services/marketing', icon: Megaphone },
     ]
   },
-  { label: 'Our Work', href: '/work' },
+
   { label: 'Our Process', href: '/process' },
   { label: 'About Us', href: '/about' },
   { label: 'Careers', href: '/careers' },
@@ -66,17 +66,17 @@ export default function Navbar() {
               {navLinks.map((link) => (
                 link.subLinks ? (
                   <div key={link.label} className="relative group">
-                    <Link
-                      href={link.href}
-                      className={`flex items-center gap-1.5 text-[15px] text-gray-700 hover:text-black font-medium transition-colors duration-300 ${
-                        pathname.startsWith(link.href) ? 'text-black' : ''
+                    <button
+                      type="button"
+                      className={`flex items-center gap-1.5 text-[15px] cursor-default text-gray-700 hover:text-black font-medium transition-colors duration-300 ${
+                        pathname.startsWith('/services') ? 'text-black' : ''
                       }`}
                     >
                       {link.label}
                       <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                       </svg>
-                    </Link>
+                    </button>
                     {/* Dropdown Menu */}
                     <div className="absolute top-full left-1/2 -translate-x-1/2 pt-6 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
                       <div className="bg-white border border-gray-100 shadow-xl rounded-2xl p-2 w-64 flex flex-col gap-1">
@@ -174,19 +174,42 @@ export default function Navbar() {
               {/* Drawer Links */}
               <div className="flex-1 overflow-y-auto py-6 px-5 flex flex-col gap-2">
                 {navLinks.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className={`flex items-center justify-between py-3.5 px-4 rounded-full text-sm font-semibold tracking-wider uppercase transition-all duration-200 ${
-                      pathname === link.href
-                        ? 'bg-[#278DFD]/10 text-[#278DFD]'
-                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    <span>{link.label}</span>
-                    <ArrowRightIcon size={14} className="opacity-40" />
-                  </Link>
+                  link.subLinks ? (
+                    <div key={link.label} className="flex flex-col gap-2">
+                      <div className="px-4 py-2 text-sm font-semibold text-gray-400 uppercase tracking-wider">
+                        {link.label}
+                      </div>
+                      {link.subLinks.map((subLink) => (
+                        <Link
+                          key={subLink.label}
+                          href={subLink.href}
+                          onClick={() => setMobileOpen(false)}
+                          className={`flex items-center justify-between py-3.5 px-4 rounded-full text-sm font-semibold tracking-wider uppercase transition-all duration-200 ${
+                            pathname === subLink.href
+                              ? 'bg-[#278DFD]/10 text-[#278DFD]'
+                              : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                          }`}
+                        >
+                          <span>{subLink.label}</span>
+                          <ArrowRightIcon size={14} className="opacity-40" />
+                        </Link>
+                      ))}
+                    </div>
+                  ) : (
+                    <Link
+                      key={link.label}
+                      href={link.href}
+                      onClick={() => setMobileOpen(false)}
+                      className={`flex items-center justify-between py-3.5 px-4 rounded-full text-sm font-semibold tracking-wider uppercase transition-all duration-200 ${
+                        pathname === link.href
+                          ? 'bg-[#278DFD]/10 text-[#278DFD]'
+                          : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      <span>{link.label}</span>
+                      <ArrowRightIcon size={14} className="opacity-40" />
+                    </Link>
+                  )
                 ))}
               </div>
 
