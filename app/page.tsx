@@ -49,11 +49,20 @@ const EmailIconSVG = () => (
 
 export default function HomePage() {
   const [, setCurrentSlide] = useState(0);
+  const [currentTeamIndex, setCurrentTeamIndex] = useState(0);
+
   const heroImages = [
     "https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero1-1786600151050.webp",
     "https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero2-1786600155337.webp",
     "https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero3-1786600158055.webp",
     "https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/glo-hero4-1786600160768.webp",
+  ];
+
+  const teamMembers = [
+    { name: "Venky", role: "Founder, gloyas", quote: "The little things we do today will blossom into peace one day.", image: "https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/venky-1786957405967.webp", transY: "translate-y-12 md:translate-y-16" },
+    { name: "Karthik", role: "Co-founder, gloyas", quote: "Between what is and what could be, something always begins.", image: "https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/karhtik1-1786957410811.webp", transY: "translate-y-12 md:translate-y-16" },
+    { name: "Vijay", role: "Co-founder, gloyas", quote: "Maybe the unknown is where you’re meant to find yourself.", image: "https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/vijay-1786957414797.webp", transY: "translate-y-6 md:translate-y-8" },
+    { name: "Varun", role: "Co-founder, gloyas", quote: "Creativity is seeing what others see and thinking what no one else ever thought.", image: "https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/varun-1786957418907.webp", transY: "translate-y-6 md:translate-y-8" }
   ];
 
   useEffect(() => {
@@ -62,6 +71,13 @@ export default function HomePage() {
     }, 6000);
     return () => clearInterval(timer);
   }, [heroImages.length]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTeamIndex((prev) => (prev + 1) % teamMembers.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [teamMembers.length]);
 
   return (
     <div className="bg-white min-h-screen overflow-x-hidden">
@@ -151,19 +167,19 @@ export default function HomePage() {
                 {/* Logos Set 1 */}
                 <div className="flex flex-row items-center gap-6 sm:gap-12 md:gap-24 px-4 sm:px-6 md:px-12">
                   <div className="flex items-center gap-1.5 sm:gap-3">
-                    <Image src="/Companies/Brandique.png" alt="Brandique" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
+                    <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/brandique-1786957422465.webp" alt="Brandique" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
                     <span className="text-[13px] sm:text-xl font-bold font-sans text-gray-800">Brandique</span>
                   </div>
                   <div className="flex items-center gap-1.5 sm:gap-3">
-                    <Image src="/Companies/Genz.zoo.png" alt="Genz.zoo" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
+                    <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/genzzoo-1786957425650.webp" alt="Genz.zoo" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
                     <span className="text-[13px] sm:text-xl font-bold font-sans text-gray-800">GenzZoo</span>
                   </div>
                   <div className="flex items-center gap-1.5 sm:gap-3">
-                    <Image src="/Companies/PFD.png" alt="PFD" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
+                    <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/pfd-1786957429488.webp" alt="PFD" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
                     <span className="text-[13px] sm:text-xl font-bold font-sans text-gray-800">PFD</span>
                   </div>
                   <div className="flex items-center gap-1.5 sm:gap-3">
-                    <Image src="/Companies/STRM_L.png" alt="STRM L" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
+                    <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/strml-1786957435266.webp" alt="STRM L" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
                     <span className="text-[13px] sm:text-xl font-bold font-sans text-gray-800">Streamlet.</span>
                   </div>
                 </div>
@@ -171,19 +187,19 @@ export default function HomePage() {
                 {/* Logos Set 2 (Duplicate for seamless loop) */}
                 <div className="flex flex-row items-center gap-6 sm:gap-12 md:gap-24 px-4 sm:px-6 md:px-12">
                   <div className="flex items-center gap-1.5 sm:gap-3">
-                    <Image src="/Companies/Brandique.png" alt="Brandique" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
+                    <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/brandique-1786957422465.webp" alt="Brandique" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
                     <span className="text-[13px] sm:text-xl font-bold font-sans text-gray-800">Brandique</span>
                   </div>
                   <div className="flex items-center gap-1.5 sm:gap-3">
-                    <Image src="/Companies/Genz.zoo.png" alt="Genz.zoo" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
+                    <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/genzzoo-1786957425650.webp" alt="Genz.zoo" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
                     <span className="text-[13px] sm:text-xl font-bold font-sans text-gray-800">GenzZoo</span>
                   </div>
                   <div className="flex items-center gap-1.5 sm:gap-3">
-                    <Image src="/Companies/PFD.png" alt="PFD" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
+                    <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/pfd-1786957429488.webp" alt="PFD" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
                     <span className="text-[13px] sm:text-xl font-bold font-sans text-gray-800">PFD</span>
                   </div>
                   <div className="flex items-center gap-1.5 sm:gap-3">
-                    <Image src="/Companies/STRM_L.png" alt="STRM L" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
+                    <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/strml-1786957435266.webp" alt="STRM L" width={48} height={48} className="w-6 h-6 sm:w-12 sm:h-12 object-contain flex-shrink-0" />
                     <span className="text-[13px] sm:text-xl font-bold font-sans text-gray-800">Streamlet.</span>
                   </div>
                 </div>
@@ -224,7 +240,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="relative z-10 w-32 h-32 sm:w-64 sm:h-64 flex-shrink-0">
-              <Image src="/Services/Branding.png" alt="Branding" fill className="object-contain" />
+              <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/branding-1786957440010.webp" alt="Branding" fill sizes="(max-width: 640px) 128px, 256px" className="object-contain" />
             </div>
           </div>
 
@@ -244,7 +260,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="relative z-10 w-32 h-32 sm:w-64 sm:h-64 flex-shrink-0">
-              <Image src="/Services/SocialMediaManagement.png" alt="Social Media Management" fill className="object-contain" />
+              <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/socialmediamanagement-1786957443467.webp" alt="Social Media Management" fill sizes="(max-width: 640px) 128px, 256px" className="object-contain" />
             </div>
           </div>
 
@@ -263,7 +279,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="relative z-10 w-32 h-32 sm:w-64 sm:h-64 flex-shrink-0">
-              <Image src="/Services/Marketing.png" alt="Marketing" fill className="object-contain" />
+              <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/marketing-1786957446982.webp" alt="Marketing" fill sizes="(max-width: 640px) 128px, 256px" className="object-contain" />
             </div>
           </div>
 
@@ -283,7 +299,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="relative z-10 w-32 h-32 sm:w-64 sm:h-64 flex-shrink-0">
-              <Image src="/Services/webdesigning.png" alt="Web Designing" fill className="object-contain" />
+              <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/webdesigning-1786957451146.webp" alt="Web Designing" fill sizes="(max-width: 640px) 128px, 256px" className="object-contain" />
             </div>
           </div>
 
@@ -307,7 +323,7 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="flex absolute right-0 sm:right-8 top-1/2 -translate-y-1/2 w-[140px] h-[140px] sm:w-[400px] sm:h-[400px] z-0">
-            <Image src="/Contact/letsconnect.png" alt="Let's make things happen" fill className="object-contain object-right" />
+            <Image src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/letsconnect-1786957454975.webp" alt="Let's make things happen" fill sizes="(max-width: 640px) 140px, 400px" className="object-contain object-right" />
           </div>
         </div>
       </section>
@@ -324,66 +340,46 @@ export default function HomePage() {
           </p>
         </div>
 
-        {/* Team Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 md:gap-12 lg:gap-14 pt-4 md:pt-10 pb-10 md:pb-20">
-          
-          {/* Member 1 */}
-          <div className="relative w-full flex flex-col items-center">
-             <div className="absolute -top-6 md:-top-10 left-0 text-[40px] md:text-[80px] leading-none font-sans font-black text-[#111] z-20 select-none tracking-tighter">“</div>
-             <div className="bg-[#278DFD] w-full aspect-[16/9] relative mb-16 md:mb-24 shadow-lg">
-                <div className="absolute top-0 left-0 w-full h-full z-10" style={{ clipPath: 'inset(-50% -50% 0 -50%)' }}>
-                  <Image src="/Team-Photos/Venky.png" alt="Venky" fill className="object-contain object-bottom scale-[1.4] md:scale-[1.6] origin-bottom translate-y-12 md:translate-y-16 drop-shadow-xl" />
-                </div>
-             </div>
-             <div className="bg-[#1C1D21] p-4 lg:p-6 absolute bottom-8 md:bottom-10 left-[-1rem] w-[95%] shadow-xl z-20">
-               <h3 className="text-white text-sm lg:text-lg font-bold leading-snug font-sans">
-                 The little things we do today will blossom into peace one day.
-               </h3>
-             </div>
-             <div className="absolute bottom-[-1.5rem] md:bottom-[-1rem] left-0 z-20">
-               <p className="text-lg md:text-xl text-gray-800 font-medium tracking-tight">Venky</p>
-               <p className="text-xs md:text-sm text-gray-600 uppercase tracking-widest mt-0.5 md:mt-1">Founder, gloyas</p>
-             </div>
-          </div>
+        {/* Team Slider (Auto-advancing Carousel) */}
+        <div className="relative w-full pt-16 md:pt-28 pb-10 md:pb-20 flex justify-center items-center min-h-[500px] md:min-h-[600px] overflow-hidden">
+          {teamMembers.map((member, idx) => {
+            const offset = (idx - currentTeamIndex + teamMembers.length) % teamMembers.length;
+            
+            let positionClass = "opacity-0 scale-75 translate-x-[150%] z-0 pointer-events-none"; // Hidden right
+            
+            if (offset === 0) {
+              positionClass = "opacity-100 scale-100 translate-x-0 z-20"; // Center
+            } else if (offset === 1) {
+              positionClass = "opacity-40 scale-[0.85] translate-x-[90%] sm:translate-x-[105%] lg:translate-x-[115%] z-10 pointer-events-none"; // Right
+            } else if (offset === teamMembers.length - 1) {
+              positionClass = "opacity-40 scale-[0.85] -translate-x-[90%] sm:-translate-x-[105%] lg:-translate-x-[115%] z-10 pointer-events-none"; // Left
+            } else {
+              positionClass = "opacity-0 scale-75 -translate-x-[150%] z-0 pointer-events-none"; // Hidden left
+            }
 
-          {/* Member 2 */}
-          <div className="relative w-full flex flex-col items-center mt-8 md:mt-0">
-             <div className="absolute -top-6 md:-top-10 left-0 text-[40px] md:text-[80px] leading-none font-sans font-black text-[#111] z-20 select-none tracking-tighter">“</div>
-             <div className="bg-[#278DFD] w-full aspect-[16/9] relative mb-16 md:mb-24 shadow-lg">
-                <div className="absolute top-0 left-0 w-full h-full z-10" style={{ clipPath: 'inset(-50% -50% 0 -50%)' }}>
-                  <Image src="/Team-Photos/Karhtik1.png" alt="Karthik" fill className="object-contain object-bottom scale-[1.4] md:scale-[1.6] origin-bottom translate-y-12 md:translate-y-16 drop-shadow-xl" />
-                </div>
-             </div>
-             <div className="bg-[#1C1D21] p-4 lg:p-6 absolute bottom-8 md:bottom-10 left-[-1rem] w-[95%] shadow-xl z-20">
-               <h3 className="text-white text-sm lg:text-lg font-bold leading-snug font-sans">
-                 Between what is and what could be, something always begins.
-               </h3>
-             </div>
-             <div className="absolute bottom-[-1.5rem] md:bottom-[-1rem] left-0 z-20">
-               <p className="text-lg md:text-xl text-gray-800 font-medium tracking-tight">Karthik</p>
-               <p className="text-xs md:text-sm text-gray-600 uppercase tracking-widest mt-0.5 md:mt-1">Co-founder, gloyas</p>
-             </div>
-          </div>
-
-          {/* Member 3 */}
-          <div className="relative w-full flex flex-col items-center mt-8 lg:mt-0">
-             <div className="absolute -top-6 md:-top-10 left-0 text-[40px] md:text-[80px] leading-none font-sans font-black text-[#111] z-20 select-none tracking-tighter">“</div>
-             <div className="bg-[#278DFD] w-full aspect-[16/9] relative mb-16 md:mb-24 shadow-lg">
-                <div className="absolute top-0 left-0 w-full h-full z-10" style={{ clipPath: 'inset(-50% -50% 0 -50%)' }}>
-                  <Image src="/Team-Photos/Vijay.png" alt="Vijay" fill className="object-contain object-bottom scale-[1.4] md:scale-[1.6] origin-bottom translate-y-6 md:translate-y-8 drop-shadow-xl" />
-                </div>
-             </div>
-             <div className="bg-[#1C1D21] p-4 lg:p-6 absolute bottom-8 md:bottom-10 left-[-1rem] w-[95%] shadow-xl z-20">
-               <h3 className="text-white text-sm lg:text-lg font-bold leading-snug font-sans">
-                 Maybe the unknown is where you’re meant to find yourself.
-               </h3>
-             </div>
-             <div className="absolute bottom-[-1.5rem] md:bottom-[-1rem] left-0 z-20">
-               <p className="text-lg md:text-xl text-gray-800 font-medium tracking-tight">Vijay</p>
-               <p className="text-xs md:text-sm text-gray-600 uppercase tracking-widest mt-0.5 md:mt-1">Co-founder, gloyas</p>
-             </div>
-          </div>
-          
+            return (
+              <div 
+                key={`team-${idx}`} 
+                className={`absolute transition-all duration-700 ease-in-out w-[85vw] sm:w-[350px] lg:w-[380px] xl:w-[390px] flex flex-col items-center ${positionClass}`}
+              >
+                 <div className="absolute -top-6 md:-top-10 left-0 text-[40px] md:text-[80px] leading-none font-sans font-black text-[#111] z-20 select-none tracking-tighter">“</div>
+                 <div className="bg-[#278DFD] w-full aspect-[16/9] relative mb-16 md:mb-24 shadow-lg">
+                    <div className="absolute top-0 left-0 w-full h-full z-10" style={{ clipPath: 'inset(-100% -50% 0 -50%)' }}>
+                      <Image src={member.image} alt={member.name} fill sizes="(max-width: 640px) 85vw, (max-width: 1024px) 350px, 390px" unoptimized className={`object-contain object-bottom scale-[1.4] md:scale-[1.6] origin-bottom ${member.transY} drop-shadow-xl`} />
+                    </div>
+                 </div>
+                 <div className="bg-[#1C1D21] p-4 lg:p-6 absolute bottom-8 md:bottom-10 left-[-1rem] w-[95%] shadow-xl z-20">
+                   <h3 className="text-white text-sm lg:text-lg font-bold leading-snug font-sans">
+                     {member.quote}
+                   </h3>
+                 </div>
+                 <div className="absolute bottom-[-1.5rem] md:bottom-[-1rem] left-0 z-20">
+                   <p className="text-lg md:text-xl text-gray-800 font-medium tracking-tight">{member.name}</p>
+                   <p className="text-xs md:text-sm text-gray-600 uppercase tracking-widest mt-0.5 md:mt-1">{member.role}</p>
+                 </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
