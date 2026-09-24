@@ -52,7 +52,7 @@ export default function Navbar() {
           {/* Logo on the left */}
           <Link href="/" className="flex items-center relative h-8 sm:h-9 w-28">
             <Image
-              src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/gloyas-logo-1786600163490.webp"
+              src="/images/Gloyas-logo.png"
               alt="GLOYAS Logo"
               fill
               sizes="110px"
@@ -155,7 +155,7 @@ export default function Navbar() {
               <div className="flex items-center justify-between p-5 border-b border-[#E2E8F0]">
                 <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center relative h-6 w-24">
                   <Image 
-                    src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/gloyas-logo-1786600163490.webp" 
+                    src="/images/Gloyas-logo.png" 
                     alt="GLOYAS" 
                     fill
                     sizes="96px"
