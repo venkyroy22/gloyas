@@ -22,6 +22,39 @@ interface QuoteData {
   message: string;
 }
 
+const MAX_SESSION_MESSAGES = 10;
+const USAGE_STORAGE_KEY = 'gloyas_stromy_chat_usage';
+
+const getInitialUsage = (): number => {
+  if (typeof window === 'undefined') return 0;
+  try {
+    const raw = localStorage.getItem(USAGE_STORAGE_KEY);
+    if (!raw) return 0;
+    const parsed = JSON.parse(raw);
+    const now = Date.now();
+    // 24 hour rolling window
+    if (now - parsed.timestamp > 24 * 60 * 60 * 1000) {
+      localStorage.removeItem(USAGE_STORAGE_KEY);
+      return 0;
+    }
+    return typeof parsed.count === 'number' ? parsed.count : 0;
+  } catch {
+    return 0;
+  }
+};
+
+const saveUsage = (count: number) => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(
+      USAGE_STORAGE_KEY,
+      JSON.stringify({ count, timestamp: Date.now() })
+    );
+  } catch {
+    // Ignore storage issues
+  }
+};
+
 export default function AIChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -30,9 +63,17 @@ export default function AIChatWidget() {
   const [isSubmittingQuote, setIsSubmittingQuote] = useState(false);
   const [quoteSubmitted, setQuoteSubmitted] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [usageCount, setUsageCount] = useState<number>(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setUsageCount(getInitialUsage());
+  }, []);
+
+  const remainingMessages = Math.max(0, MAX_SESSION_MESSAGES - usageCount);
+  const isLimitReached = remainingMessages <= 0;
 
   const scrollToBottom = useCallback(() => {
     if (messagesEndRef.current) {
@@ -42,7 +83,7 @@ export default function AIChatWidget() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, scrollToBottom]);
+  }, [messages, isLoading, scrollToBottom]);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -172,7 +213,11 @@ export default function AIChatWidget() {
 
   const sendMessage = async (directMessage?: string) => {
     const trimmed = (directMessage || input).trim();
-    if (!trimmed || isLoading) return;
+    if (!trimmed || isLoading || isLimitReached) return;
+
+    const nextCount = usageCount + 1;
+    setUsageCount(nextCount);
+    saveUsage(nextCount);
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -186,8 +231,9 @@ export default function AIChatWidget() {
     setInput('');
     setIsLoading(true);
 
-    // Prepare messages for API (exclude any internal tags from message history)
-    const apiMessages = updatedMessages.map((m) => ({
+    // Truncate to the last 6 messages to preserve token budget
+    const recentMessages = updatedMessages.slice(-6);
+    const apiMessages = recentMessages.map((m) => ({
       role: m.role,
       content: sanitizeContent(m.content),
     }));
@@ -391,35 +437,14 @@ export default function AIChatWidget() {
                   />
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-white text-sm font-semibold tracking-tight">
-                      Stromy
-                    </h3>
-                    {/* Animated dots beside Stromy in the header */}
-                    {isLoading && (
-                      <span className="inline-flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded-full">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '300ms' }} />
-                      </span>
-                    )}
-                  </div>
+                  <h3 className="text-white text-sm font-semibold tracking-tight">
+                    Stromy
+                  </h3>
                   <div className="flex items-center gap-1.5">
-                    {isLoading ? (
-                      <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-pulse" />
-                        <span className="text-[11px] text-blue-300 font-medium">
-                          Stromy is responding...
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <span className="text-[11px] text-gray-400 font-medium">
-                          GLOYAS AI Assistant
-                        </span>
-                      </>
-                    )}
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-[11px] text-gray-400 font-medium">
+                      GLOYAS AI Assistant
+                    </span>
                   </div>
                 </div>
               </div>
@@ -453,18 +478,81 @@ export default function AIChatWidget() {
                 overscrollBehavior: 'contain',
               }}
             >
-              {messages.map((msg) => (
-                <motion.div
-                  key={msg.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className={`flex items-end gap-2 ${
-                    msg.role === 'user' ? 'justify-end' : 'justify-start'
-                  }`}
-                >
-                  {/* Stromy Avatar icon beside assistant messages */}
-                  {msg.role === 'assistant' && (
+              {messages
+                .filter((msg) => msg.role === 'user' || formatContent(msg.content))
+                .map((msg) => (
+                  <motion.div
+                    key={msg.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className={`flex items-end gap-2 ${
+                      msg.role === 'user' ? 'justify-end' : 'justify-start'
+                    }`}
+                  >
+                    {/* Stromy Avatar icon beside assistant messages */}
+                    {msg.role === 'assistant' && (
+                      <div className="w-7 h-7 rounded-full bg-[#278DFD] flex items-center justify-center flex-shrink-0 overflow-hidden mb-0.5 shadow-sm">
+                        <Image
+                          src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/gloyasagetnmascot-1790846259991.webp"
+                          alt="Stromy"
+                          width={22}
+                          height={22}
+                          className="object-contain"
+                        />
+                      </div>
+                    )}
+
+                    <div
+                      className={`max-w-[80%] px-4 py-3 text-[13px] leading-relaxed ${
+                        msg.role === 'user'
+                          ? 'bg-[#278DFD] text-white rounded-[18px] rounded-br-[6px]'
+                          : 'bg-gray-100 text-gray-800 rounded-[18px] rounded-bl-[6px]'
+                      }`}
+                    >
+                      {formatContent(msg.content) ? (
+                        <div>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: formatContent(msg.content),
+                            }}
+                          />
+                          {/* Loading dots while streaming at the end of content */}
+                          {msg.role === 'assistant' &&
+                            isLoading &&
+                            msg.id === messages[messages.length - 1]?.id && (
+                              <div className="inline-flex items-center gap-1 mt-1.5 text-[#278DFD]">
+                                <span
+                                  className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce"
+                                  style={{ animationDelay: '0ms' }}
+                                />
+                                <span
+                                  className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce"
+                                  style={{ animationDelay: '150ms' }}
+                                />
+                                <span
+                                  className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce"
+                                  style={{ animationDelay: '300ms' }}
+                                />
+                              </div>
+                            )}
+                        </div>
+                      ) : null}
+                    </div>
+                  </motion.div>
+                ))}
+
+              {/* Stromy Responding Indicator inside chat beside the Stromy icon */}
+              {isLoading &&
+                (!messages.length ||
+                  messages[messages.length - 1].role === 'user' ||
+                  !formatContent(messages[messages.length - 1].content)) && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="flex items-end gap-2 justify-start"
+                  >
                     <div className="w-7 h-7 rounded-full bg-[#278DFD] flex items-center justify-center flex-shrink-0 overflow-hidden mb-0.5 shadow-sm">
                       <Image
                         src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/gloyasagetnmascot-1790846259991.webp"
@@ -474,42 +562,25 @@ export default function AIChatWidget() {
                         className="object-contain"
                       />
                     </div>
-                  )}
-
-                  <div
-                    className={`max-w-[80%] px-4 py-3 text-[13px] leading-relaxed ${
-                      msg.role === 'user'
-                        ? 'bg-[#278DFD] text-white rounded-[18px] rounded-br-[6px]'
-                        : 'bg-gray-100 text-gray-800 rounded-[18px] rounded-bl-[6px]'
-                    }`}
-                  >
-                    {formatContent(msg.content) ? (
-                      <div>
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: formatContent(msg.content),
-                          }}
+                    <div className="bg-gray-100 text-gray-700 rounded-[18px] rounded-bl-[6px] px-4 py-2.5 flex items-center gap-2 text-[13px] shadow-sm">
+                      <span className="font-medium text-gray-600">Stromy is responding</span>
+                      <span className="inline-flex items-center gap-1">
+                        <span
+                          className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce"
+                          style={{ animationDelay: '0ms' }}
                         />
-                        {/* Loading dots while streaming at the end of content */}
-                        {msg.role === 'assistant' && isLoading && msg.id === messages[messages.length - 1]?.id && (
-                          <div className="inline-flex items-center gap-1 mt-1.5 text-[#278DFD]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '0ms' }} />
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '150ms' }} />
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '300ms' }} />
-                          </div>
-                        )}
-                      </div>
-                    ) : null}
-                    {msg.role === 'assistant' && !formatContent(msg.content) && (isLoading || isSubmittingQuote) && (
-                      <div className="flex items-center gap-1.5 py-1 px-1">
-                        <span className="w-2 h-2 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-2 h-2 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-2 h-2 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '300ms' }} />
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
+                        <span
+                          className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce"
+                          style={{ animationDelay: '150ms' }}
+                        />
+                        <span
+                          className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce"
+                          style={{ animationDelay: '300ms' }}
+                        />
+                      </span>
+                    </div>
+                  </motion.div>
+                )}
 
               {/* Quote Submitting Indicator */}
               {isSubmittingQuote && (
@@ -541,11 +612,48 @@ export default function AIChatWidget() {
                 </motion.div>
               )}
 
+              {/* Session Limit Reached Card in chat */}
+              {isLimitReached && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mx-1 my-2 p-3.5 bg-gradient-to-br from-blue-50/90 to-indigo-50/90 border border-blue-200/80 rounded-2xl text-center shadow-sm"
+                >
+                  <div className="w-8 h-8 rounded-full bg-[#278DFD]/10 text-[#278DFD] flex items-center justify-center mx-auto mb-1.5 text-sm">
+                    🐾
+                  </div>
+                  <h4 className="text-xs font-semibold text-gray-900 mb-1">
+                    Session Limit Reached ({MAX_SESSION_MESSAGES}/{MAX_SESSION_MESSAGES} questions)
+                  </h4>
+                  <p className="text-[11px] text-gray-600 leading-relaxed mb-3">
+                    You&apos;ve used your free questions with Stromy for this session. Our team would love to assist you directly!
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                    <a
+                      href="mailto:gloyas.connect@gmail.com"
+                      className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[#278DFD] hover:bg-[#2075D3] text-white text-[11px] font-medium rounded-full transition-colors shadow-sm"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      Email Our Team
+                    </a>
+                    <a
+                      href="/#contact"
+                      onClick={() => setIsOpen(false)}
+                      className="inline-flex items-center justify-center gap-1 px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-[11px] font-medium rounded-full transition-colors"
+                    >
+                      Request Free Quote →
+                    </a>
+                  </div>
+                </motion.div>
+              )}
+
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick Actions (only show when few messages) */}
-            {messages.length <= 1 && !isLoading && (
+            {/* Quick Actions (only show when few messages and limit not reached) */}
+            {messages.length <= 1 && !isLoading && !isLimitReached && (
               <div className="px-4 pb-2 flex flex-wrap gap-1.5 flex-shrink-0">
                 {quickActions.map((action) => (
                   <button
@@ -561,24 +669,46 @@ export default function AIChatWidget() {
               </div>
             )}
 
+            {/* Session Allowance Counter Bar */}
+            <div className="px-4 py-1.5 flex items-center justify-between border-t border-gray-100 bg-gray-50/80 text-[11px] flex-shrink-0">
+              <span className="text-gray-500 font-medium">Session Allowance</span>
+              {isLimitReached ? (
+                <span className="text-rose-600 font-semibold bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">
+                  0 of {MAX_SESSION_MESSAGES} left
+                </span>
+              ) : remainingMessages <= 3 ? (
+                <span className="text-amber-700 font-semibold bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/80 animate-pulse">
+                  ⚡ {remainingMessages} {remainingMessages === 1 ? 'question' : 'questions'} left
+                </span>
+              ) : (
+                <span className="text-[#278DFD] font-medium bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
+                  {remainingMessages} of {MAX_SESSION_MESSAGES} questions left
+                </span>
+              )}
+            </div>
+
             {/* Input Area */}
-            <div className="px-4 pb-4 pt-2 border-t border-gray-100 flex-shrink-0">
+            <div className="px-4 pb-3 pt-2 flex-shrink-0">
               <div className="flex items-end gap-2 bg-gray-50 rounded-[16px] border border-gray-200 px-3 py-2 focus-within:border-[#278DFD] focus-within:ring-1 focus-within:ring-[#278DFD]/20 transition-all">
                 <textarea
                   ref={inputRef}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="Ask about our services..."
+                  placeholder={
+                    isLimitReached
+                      ? "Session limit reached. Contact us via email!"
+                      : "Ask about our services..."
+                  }
                   rows={1}
-                  className="flex-1 bg-transparent text-[13px] text-gray-900 placeholder-gray-400 resize-none outline-none max-h-[80px] overflow-y-auto py-1"
-                  disabled={isLoading}
+                  className="flex-1 bg-transparent text-[13px] text-gray-900 placeholder-gray-400 resize-none outline-none max-h-[80px] overflow-y-auto py-1 disabled:opacity-60"
+                  disabled={isLoading || isLimitReached}
                   id="ai-chat-input"
                   style={{ scrollbarWidth: 'none' }}
                 />
                 <button
                   onClick={() => sendMessage()}
-                  disabled={!input.trim() || isLoading}
+                  disabled={!input.trim() || isLoading || isLimitReached}
                   className="w-8 h-8 rounded-full bg-[#278DFD] hover:bg-[#2075D3] disabled:bg-gray-200 disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0 transition-colors duration-200 cursor-pointer"
                   aria-label="Send message"
                   id="ai-chat-send"
@@ -588,7 +718,7 @@ export default function AIChatWidget() {
                     height="14"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke={!input.trim() || isLoading ? '#9CA3AF' : 'white'}
+                    stroke={!input.trim() || isLoading || isLimitReached ? '#9CA3AF' : 'white'}
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -597,7 +727,7 @@ export default function AIChatWidget() {
                   </svg>
                 </button>
               </div>
-              <p className="text-[10px] text-gray-400 text-center mt-2 font-medium">
+              <p className="text-[10px] text-gray-400 text-center mt-1.5 font-medium">
                 Powered by GLOYAS AI
               </p>
             </div>

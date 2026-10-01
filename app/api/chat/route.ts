@@ -109,14 +109,17 @@ export async function POST(req: NextRequest) {
     const groq = new Groq({ apiKey });
     const { messages } = await req.json() as { messages: ChatMessage[] };
 
+    // Slice messages to the last 8 to cap token consumption on long conversations
+    const safeMessages = Array.isArray(messages) ? messages.slice(-8) : [];
+
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
-        ...messages,
+        ...safeMessages,
       ],
       model: 'openai/gpt-oss-120b',
       temperature: 0.6,
-      max_tokens: 1024,
+      max_tokens: 600,
       stream: true,
     });
 
