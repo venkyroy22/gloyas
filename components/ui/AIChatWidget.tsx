@@ -391,14 +391,35 @@ export default function AIChatWidget() {
                   />
                 </div>
                 <div>
-                  <h3 className="text-white text-sm font-semibold tracking-tight">
-                    Stromy
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-white text-sm font-semibold tracking-tight">
+                      Stromy
+                    </h3>
+                    {/* Animated dots beside Stromy in the header */}
+                    {isLoading && (
+                      <span className="inline-flex items-center gap-1 bg-white/10 px-2 py-0.5 rounded-full">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '300ms' }} />
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-[11px] text-gray-400 font-medium">
-                      GLOYAS AI Assistant
-                    </span>
+                    {isLoading ? (
+                      <>
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-pulse" />
+                        <span className="text-[11px] text-blue-300 font-medium">
+                          Stromy is responding...
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-[11px] text-gray-400 font-medium">
+                          GLOYAS AI Assistant
+                        </span>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -438,29 +459,52 @@ export default function AIChatWidget() {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.25 }}
-                  className={`flex ${
+                  className={`flex items-end gap-2 ${
                     msg.role === 'user' ? 'justify-end' : 'justify-start'
                   }`}
                 >
+                  {/* Stromy Avatar icon beside assistant messages */}
+                  {msg.role === 'assistant' && (
+                    <div className="w-7 h-7 rounded-full bg-[#278DFD] flex items-center justify-center flex-shrink-0 overflow-hidden mb-0.5 shadow-sm">
+                      <Image
+                        src="https://cdn-img.streamletedge.com/6a6874155ad7d80e5dbcdb7b/images/gloyasagetnmascot-1790846259991.webp"
+                        alt="Stromy"
+                        width={22}
+                        height={22}
+                        className="object-contain"
+                      />
+                    </div>
+                  )}
+
                   <div
-                    className={`max-w-[85%] px-4 py-3 text-[13px] leading-relaxed ${
+                    className={`max-w-[80%] px-4 py-3 text-[13px] leading-relaxed ${
                       msg.role === 'user'
                         ? 'bg-[#278DFD] text-white rounded-[18px] rounded-br-[6px]'
                         : 'bg-gray-100 text-gray-800 rounded-[18px] rounded-bl-[6px]'
                     }`}
                   >
                     {formatContent(msg.content) ? (
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: formatContent(msg.content),
-                        }}
-                      />
+                      <div>
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: formatContent(msg.content),
+                          }}
+                        />
+                        {/* Loading dots while streaming at the end of content */}
+                        {msg.role === 'assistant' && isLoading && msg.id === messages[messages.length - 1]?.id && (
+                          <div className="inline-flex items-center gap-1 mt-1.5 text-[#278DFD]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '0ms' }} />
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '150ms' }} />
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '300ms' }} />
+                          </div>
+                        )}
+                      </div>
                     ) : null}
                     {msg.role === 'assistant' && !formatContent(msg.content) && (isLoading || isSubmittingQuote) && (
-                      <div className="flex items-center gap-1.5 py-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                      <div className="flex items-center gap-1.5 py-1 px-1">
+                        <span className="w-2 h-2 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-2 h-2 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <span className="w-2 h-2 rounded-full bg-[#278DFD] animate-bounce" style={{ animationDelay: '300ms' }} />
                       </div>
                     )}
                   </div>
