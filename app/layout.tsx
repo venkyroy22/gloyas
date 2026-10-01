@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import SmoothScroll from "@/components/layout/SmoothScroll";
+import AIChatWidget from "@/components/ui/AIChatWidget";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -41,7 +42,9 @@ export default function RootLayout({
           <main className="flex-1 pt-16 sm:pt-20">{children}</main>
           <Footer />
         </SmoothScroll>
+        <AIChatWidget />
       </body>
     </html>
   );
 }
+
