@@ -1,9 +1,7 @@
 import { NextRequest } from 'next/server';
 import Groq from 'groq-sdk';
 
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
+export const dynamic = 'force-dynamic';
 
 const SYSTEM_PROMPT = `You are Stromy, the friendly and professional AI assistant for GLOYAS — a premium digital agency. You speak in a warm, confident, and professional tone. Keep responses concise but helpful (2-4 sentences max unless the user asks for detail). Use emojis sparingly but effectively.
 
@@ -100,6 +98,15 @@ interface ChatMessage {
 
 export async function POST(req: NextRequest) {
   try {
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      return new Response(
+        JSON.stringify({ error: 'GROQ_API_KEY is not configured' }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const groq = new Groq({ apiKey });
     const { messages } = await req.json() as { messages: ChatMessage[] };
 
     const chatCompletion = await groq.chat.completions.create({
